@@ -1,2 +1,2 @@
 # google-workspace-mcp
-An MCP server allowing agents to interact with Google Workspace tools
+An MCP (model context protocol) server allowing agents to interact with Google Workspace tools
