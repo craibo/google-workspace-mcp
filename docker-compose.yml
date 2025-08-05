@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  mcp-server:
+    build: .
+    container_name: python-mcp-server
+    volumes:
+      # In a real production scenario, use Docker secrets for credentials.json
+      # For development, we can mount it as a read-only volume.
+      - ./credentials.json:/usr/src/app/credentials.json:ro
+      # Mount a volume to persist the token.json file across container restarts
+      - token_data:/usr/src/app/
+
+volumes:
+  token_data:

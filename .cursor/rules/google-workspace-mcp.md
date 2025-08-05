@@ -10,14 +10,23 @@ Here is the plan we'll follow:
 
 1.  **Project Setup & Authentication**: Configure a Google Cloud project, enable the necessary APIs, and set up OAuth 2.0 credentials. - **COMPLETED**
 2.  **Initial Project Scaffolding**: Create the directory structure, `requirements.txt`, and placeholder Python files. - **COMPLETED**
-3.  **Tool Definition**: Define the specific functions (tools) our server will provide for Drive, Gmail, and Calendar.
-4.  **Google Drive Integration**: Implement the code to search for files and fetch file content from Google Drive.
-5.  **Gmail Integration**: Implement the code to search for emails and fetch email details from Gmail.
-6.  **Google Calendar Integration**: Implement the code to search for events and fetch event details from Google Calendar.
-7.  **MCP Server Implementation (FastAPI)**: Build a simple web server using FastAPI to expose the tools via API endpoints.
-8.  **Containerization with Docker**: Create a Dockerfile and docker-compose.yml to build and run the entire application as a container.
+3.  **Tool Definition**: Define the specific functions (tools) our server will provide for Drive, Gmail, and Calendar. - **COMPLETED**
+4.  **Google Drive Integration**: Implement the code to search for files and fetch file content from Google Drive. - **COMPLETED**
+5.  **Gmail Integration**: Implement the code to search for emails and fetch email details from Gmail. - **COMPLETED**
+6.  **Google Calendar Integration**: Implement the code to search for events and fetch event details from Google Calendar. - **COMPLETED**
+7.  **MCP Server Implementation (FastAPI)**: Build a simple web server using FastAPI to expose the tools via API endpoints. - **COMPLETED**
+8.  **Containerization with Docker**: Create a Dockerfile and docker-compose.yml to build and run the entire application as a container. - **COMPLETED**
 
-Let's get started with the next step!
+### **MCP Refactoring**
+
+The following steps will refactor the project to use the Model Context Protocol.
+
+1.  **Update Dependencies**: Add the `mcp` library to `requirements.txt`.
+2.  **Refactor to MCP Server**: Replace the FastAPI implementation with a `FastMCP` server.
+3.  **Refactor Tools**: Convert tool functions to `async` and use the `@mcp.tool()` decorator for registration.
+4.  **Update Documentation**: Update the `README.md` and containerization files to reflect the new MCP-based approach.
+
+Let's get started with the MCP refactoring!
 
 ---
 
