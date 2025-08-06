@@ -30,9 +30,9 @@ This server exposes the following tools to the agent:
 ### Google Calendar
 
 -   `list_calendars()`: Lists all available calendars for the authenticated user.
--   `list_calendar_events(calendar_ids: List[str], start_time: str, end_time: str, query: Optional[str] = None, max_results: int = 100)`: Lists all events from specified calendars within a time period, with optional filtering.
--   `search_calendar_events(calendar_ids: List[str], query: str, start_time: str, end_time: str)`: Searches for calendar events within a specified time range that match a query.
--   `get_calendar_event_details(calendar_id: str, event_id: str)`: Fetches the full details of a specific calendar event.
+-   `list_calendar_events(calendar_ids: Optional[List[str]] = None, start_time: str, end_time: str, query: Optional[str] = None, max_results: int = 100)`: Lists all events from specified calendars within a time period, with optional filtering. If no calendar_ids are provided, uses the default configured calendars.
+-   `search_calendar_events(calendar_ids: Optional[List[str]] = None, query: str, start_time: str, end_time: str)`: Searches for calendar events within a specified time range that match a query. If no calendar_ids are provided, uses the default configured calendars.
+-   `get_calendar_event_details(event_id: str, calendar_id: Optional[str] = None)`: Fetches the full details of a specific calendar event. If no calendar_id is provided, uses the first configured default calendar.
 
 ## Prerequisites
 
@@ -155,6 +155,8 @@ This server is designed to be used with an MCP host, such as Claude for Desktop.
 
 For example, to connect this server to Claude for Desktop, you would add the following to your `claude_desktop_config.json` file. Please refer to the official [MCP documentation](https://modelcontextprotocol.io/quickstart/server/#testing-your-server-with-claude-for-desktop) for the location of this file on your system.
 
+#### **Local Server Configuration (Recommended)**
+
 ```json
 {
   "mcpServers": {
@@ -173,6 +175,56 @@ For example, to connect this server to Claude for Desktop, you would add the fol
 ```
 
 **Note**: You must replace `/ABSOLUTE/PATH/TO/google-workspace-mcp` with the actual absolute path to this project's directory on your machine.
+
+#### **Docker Server Configuration**
+
+If you prefer to run the server in Docker, you can use the following configuration:
+
+```json
+{
+  "mcpServers": {
+    "google-workspace": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-v",
+        "/ABSOLUTE/PATH/TO/google-workspace-mcp:/app",
+        "-w",
+        "/app",
+        "google-workspace-mcp:latest",
+        "python",
+        "server.py"
+      ],
+      "env": {
+        "DEFAULT_CALENDAR_IDS": "primary,work@company.com"
+      }
+    }
+  }
+}
+```
+
+**Prerequisites for Docker Configuration:**
+1. **Build the Docker image**:
+   ```bash
+   docker build -t google-workspace-mcp:latest .
+   ```
+
+2. **Ensure credentials.json is in the project root**:
+   ```bash
+   # Make sure credentials.json is in the project directory
+   ls -la credentials.json
+   ```
+
+3. **Replace the volume path**: Update `/ABSOLUTE/PATH/TO/google-workspace-mcp` with your actual project path.
+
+**Docker Configuration Notes:**
+- The `-i` flag keeps STDIN open for MCP communication
+- The `-v` flag mounts your project directory to `/app` in the container
+- The `-w /app` sets the working directory in the container
+- The `--rm` flag removes the container after it stops
+- Environment variables are passed through the `env` section
 
 ### Connecting with `mcp-remote`
 

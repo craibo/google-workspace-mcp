@@ -1,6 +1,3 @@
----
-alwaysApply: true
----
 
 This project adheres to a structured development plan and a set of coding guidelines to ensure consistency, quality, and maintainability.
 
@@ -22,25 +19,21 @@ All Python and FastAPI code should follow the standards defined in the **[Python
 - **Performance**: Strategies for optimization, caching, and efficient data handling.
 - **Error Handling**: Consistent and robust error management patterns.
 
-Please familiarize yourself with both documents before contributing to the project.
-This project adheres to a structured development plan and a set of coding guidelines to ensure consistency, quality, and maintainability.
+### **Implementation Options and Decisions**
 
-### **Service Implementation Plan**
+For major architectural decisions and implementation options, refer to the **[Calendar Implementation Options](calendar-implementation-options.md)** document. This document provides:
 
-The complete blueprint for this project, including the architecture, tool definitions, and containerization strategy, is documented in the **[Google Workspace MCP Service Implementation Plan](google-workspace-mcp.md)**. This document outlines:
+- **Implementation Options**: Detailed comparison of different approaches
+- **Decision Rationale**: Explanation of chosen implementations
+- **Migration Paths**: Guidelines for transitioning between implementations
 
-- **Project Setup**: Configuring Google Cloud, enabling APIs, and setting up OAuth 2.0.
-- **Tool Definitions**: Detailed specifications for Google Drive, Gmail, and Google Calendar tools.
-- **Server Implementation**: The design of the FastAPI server.
-- **Containerization**: Instructions for building and running the application with Docker.
+### **Current Implementation Status**
 
-### **Python and FastAPI Development Guidelines**
+The current implementation status and details are documented in the **[Option 1 Implementation Summary](option-1-implementation-summary.md)**. This document provides:
 
-All Python and FastAPI code should follow the standards defined in the **[Python and FastAPI Development Guidelines](python.mdc)**. These guidelines cover:
+- **Implementation Details**: Complete technical specifications
+- **Usage Examples**: Practical code examples
+- **Testing Results**: Comprehensive test coverage information
+- **Production Readiness**: Deployment and configuration details
 
-- **Code Style**: Functional programming, naming conventions, and file structure.
-- **FastAPI Best Practices**: Dependency injection, asynchronous operations, and error handling.
-- **Performance**: Strategies for optimization, caching, and efficient data handling.
-- **Error Handling**: Consistent and robust error management patterns.
-
-Please familiarize yourself with both documents before contributing to the project.
+Please familiarize yourself with all documents before contributing to the project.
