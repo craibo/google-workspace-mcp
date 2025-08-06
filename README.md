@@ -2,7 +2,7 @@
 
 This project is a secure MCP (Model-Context-Protocol) server that acts as a bridge between a large language model (or any other agent) and Google Workspace services. It exposes a set of tools to interact with Google Drive, Gmail, and Google Calendar in a read-only capacity.
 
-This server is built using the official [Python MCP SDK](https://modelcontextprotocol.io/quickstart/server) and is ready to be used with any MCP-compatible host, such as Claude for Desktop.
+This server is built using the official [Python MCP SDK](https://modelcontextprotocol.io/quickstart/server) and is ready to be used with any MCP-compatible host, such as Claude for Desktop or [Gemini CLI](https://github.com/google-gemini/gemini-cli).
 
 ## Features
 
@@ -26,8 +26,12 @@ This server exposes the following tools to the agent:
 
 ### Gmail
 
--   `search_gmail(query: str)`: Searches for emails in Gmail matching the query.
+-   `search_gmail(query: str, label_ids: Optional[List[str]] = None, max_results: int = 10)`: Searches for emails in Gmail matching the query, optionally within specific labels.
 -   `get_gmail_message_details(message_id: str)`: Fetches the full details of a specific email message by its ID.
+-   `list_gmail_labels()`: Lists all available Gmail labels for the authenticated user.
+-   `search_gmail_labels(query: str = "")`: Searches for Gmail labels matching the query.
+-   `get_gmail_label_details(label_id: str)`: Gets detailed information about a specific Gmail label.
+-   `search_gmail_by_label(label_id: str, query: str = "", max_results: int = 10)`: Searches for emails within a specific Gmail label.
 
 ### Google Calendar
 
@@ -61,6 +65,8 @@ The Google Drive content search functionality supports:
 
 ### Example Usage
 
+#### Google Drive Content Search
+
 ```python
 # Basic content search
 search_drive_by_content("project requirements")
@@ -79,6 +85,25 @@ search_drive_by_content("report", file_types=["application/pdf", "application/vn
 
 # Search within a specific file
 search_within_file_content("file_id_123", "specific term")
+```
+
+#### Gmail Label Management
+
+```python
+# List all labels
+list_gmail_labels()
+
+# Search for labels containing "work"
+search_gmail_labels("work")
+
+# Get details for a specific label
+get_gmail_label_details("Label_123")
+
+# Search emails within a specific label
+search_gmail_by_label("Label_123", "meeting")
+
+# Search emails with label filter
+search_gmail("urgent", label_ids=["INBOX", "Label_123"])
 ```
 
 ## Prerequisites
@@ -212,11 +237,11 @@ Docker is primarily useful for deployment scenarios where you want to containeri
 
 ## Connecting to the MCP Server
 
-This server is designed to be used with an MCP host, such as Claude for Desktop. For proper tool discovery and communication, the server should be run directly on the host system.
+This server is designed to be used with an MCP host, such as Claude for Desktop or [Gemini CLI](https://github.com/google-gemini/gemini-cli). For proper tool discovery and communication, the server should be run directly on the host system.
 
 ### Example MCP Client Configuration
 
-For example, to connect this server to Claude for Desktop, you would add the following to your `claude_desktop_config.json` file. Please refer to the official [MCP documentation](https://modelcontextprotocol.io/quickstart/server/#testing-your-server-with-claude-for-desktop) for the location of this file on your system.
+For example, to connect this server to Claude for Desktop or Gemini CLI, you would add the following to your configuration file. Please refer to the official [MCP documentation](https://modelcontextprotocol.io/quickstart/server/#testing-your-server-with-claude-for-desktop) for the location of this file on your system.
 
 #### **Local Server Configuration (Recommended)**
 
@@ -238,6 +263,25 @@ For example, to connect this server to Claude for Desktop, you would add the fol
 ```
 
 **Note**: You must replace `/ABSOLUTE/PATH/TO/google-workspace-mcp` with the actual absolute path to this project's directory on your machine.
+
+#### **Gemini CLI Configuration**
+
+To use this server with [Gemini CLI](https://github.com/google-gemini/gemini-cli), you can configure it in your Gemini CLI settings:
+
+```json
+{
+  "mcpServers": {
+    "google-workspace": {
+      "command": "/ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python",
+      "args": ["server.py"],
+      "workingDirectory": "/ABSOLUTE/PATH/TO/google-workspace-mcp",
+      "env": {
+        "DEFAULT_CALENDAR_IDS": "primary,work@company.com"
+      }
+    }
+  }
+}
+```
 
 #### **Docker Server Configuration**
 
