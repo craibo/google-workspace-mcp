@@ -8,9 +8,10 @@ This server is built using the official [Python MCP SDK](https://modelcontextpro
 
 -   **Google Drive**: Search for files and retrieve file content.
 -   **Gmail**: Search for emails and fetch email details.
--   **Google Calendar**: Search for events and get event details.
+-   **Google Calendar**: List calendars, search events, and get event details with enhanced filtering.
 -   **OAuth 2.0**: Secure authentication using Google's OAuth 2.0 flow.
 -   **Dockerized**: Ready for deployment with Docker and Docker Compose.
+-   **Configurable**: Support for default calendar IDs via environment variables.
 
 ## Available Tools
 
@@ -28,8 +29,10 @@ This server exposes the following tools to the agent:
 
 ### Google Calendar
 
--   `search_calendar_events(query: str, start_time: str, end_time: str)`: Searches for calendar events within a specified time range that match a query.
--   `get_calendar_event_details(event_id: str)`: Fetches the full details of a specific calendar event.
+-   `list_calendars()`: Lists all available calendars for the authenticated user.
+-   `list_calendar_events(calendar_ids: List[str], start_time: str, end_time: str, query: Optional[str] = None, max_results: int = 100)`: Lists all events from specified calendars within a time period, with optional filtering.
+-   `search_calendar_events(calendar_ids: List[str], query: str, start_time: str, end_time: str)`: Searches for calendar events within a specified time range that match a query.
+-   `get_calendar_event_details(calendar_id: str, event_id: str)`: Fetches the full details of a specific calendar event.
 
 ## Prerequisites
 
@@ -40,8 +43,47 @@ This server exposes the following tools to the agent:
 ## Setup and Configuration
 
 1.  **Google Cloud Credentials**:
-    *   Follow the instructions in the [**Service Implementation Plan**](.cursor/rules/google-workspace-mcp.md) to set up your Google Cloud project and download your OAuth 2.0 client credentials.
-    *   Rename the downloaded JSON file to `credentials.json` and place it in the root directory of this project. This file is sensitive and should not be committed to version control.
+    
+    **Step 1: Create a Google Cloud Project**
+    *   Go to the [Google Cloud Console](https://console.cloud.google.com/).
+    *   Click the project drop-down at the top of the page and select "New Project".
+    *   Enter a project name (e.g., "google-workspace-mcp") and click "Create".
+    *   Wait for the project to be created and then select it from the project drop-down.
+
+    **Step 2: Enable Required APIs**
+    *   In your new project, navigate to "APIs & Services" > "Library".
+    *   Search for and enable the following APIs one by one:
+        *   **Google Drive API** - Search for "Google Drive API" and click "Enable"
+        *   **Gmail API** - Search for "Gmail API" and click "Enable"
+        *   **Google Calendar API** - Search for "Google Calendar API" and click "Enable"
+
+    **Step 3: Configure OAuth Consent Screen**
+    *   Navigate to "APIs & Services" > "OAuth consent screen".
+    *   Choose **External** and click "Create".
+    *   Fill in the required fields:
+        *   **App name**: Google Workspace MCP Server
+        *   **User support email**: Your email address
+        *   **Developer contact information**: Your email address
+    *   Click "SAVE AND CONTINUE".
+    *   On the "Scopes" page, click "ADD OR REMOVE SCOPES".
+    *   Find and add the following scopes:
+        *   `https://www.googleapis.com/auth/drive.readonly` (View files in your Google Drive)
+        *   `https://www.googleapis.com/auth/gmail.readonly` (Read all resources and their metadata)
+        *   `https://www.googleapis.com/auth/calendar.readonly` (View events on all your calendars)
+    *   Click "Update", then "SAVE AND CONTINUE".
+    *   On the "Test users" page, click "+ ADD USERS".
+    *   Add your Google account email address (the account whose Drive, Gmail, and Calendar you'll be accessing).
+    *   Click "SAVE AND CONTINUE".
+
+    **Step 4: Create OAuth 2.0 Credentials**
+    *   Navigate to "APIs & Services" > "Credentials".
+    *   Click "+ CREATE CREDENTIALS" > "OAuth client ID".
+    *   For **Application type**, select **Desktop app**.
+    *   Give it a name like "Google Workspace MCP Server".
+    *   Click "CREATE".
+    *   A pop-up will appear with your Client ID and Client Secret. Click **DOWNLOAD JSON**.
+    *   Rename the downloaded file to `credentials.json` and save it in the root directory of this project.
+    *   **Important**: This file contains sensitive information and should not be shared publicly or committed to version control.
 
 2.  **Local Environment (for development)**:
     *   It is highly recommended to use a virtual environment to manage project dependencies.
@@ -55,28 +97,59 @@ This server exposes the following tools to the agent:
 
 ## Running the Server
 
-The server is designed to be run with Docker, which is the recommended approach for both development and production. It communicates over `stdio`, as is standard for MCP servers.
+The server communicates over `stdio`, as is standard for MCP servers. For MCP clients to properly connect, the server should be run directly on the host system.
 
-### Running with Docker
+### Running Locally (Recommended for MCP Clients)
+
+1.  **Start the server**:
+    The first time you run the application, it will open a browser window for you to authorize access to your Google account.
+    ```bash
+    ./.venv/bin/python server.py
+    ```
+    After successful authorization, a `token.json` file will be created in the root directory to store your OAuth tokens.
+
+### Running with Docker (Alternative)
+
+Docker is primarily useful for deployment scenarios where you want to containerize the application. However, for MCP client integration, running locally is recommended.
 
 1.  **Build and start the container**:
     ```bash
     docker-compose up --build
     ```
-    The `docker-compose.yml` configuration ensures that the `credentials.json` file is available to the container and that the `token.json` file is persisted in a Docker volume. The first time you run this, a browser window will open for you to authorize the application.
+    The `docker-compose.yml` configuration ensures that the `credentials.json` file is available to the container and that the `token.json` file is persisted in a Docker volume.
 
-### Running Locally (for debugging)
+## Configuration Options
 
-You can also run the server locally for easier debugging:
+### Default Calendar IDs
 
-1.  **Start the server**:
-    ```bash
-    ./.venv/bin/python -m src.server
-    ```
+You can configure default calendar IDs that will be used when no specific calendar is provided. This is useful for setting up commonly used calendars.
+
+**Environment Variable**: `DEFAULT_CALENDAR_IDS`
+
+**Example**:
+```bash
+export DEFAULT_CALENDAR_IDS="primary,work@company.com,personal@gmail.com"
+```
+
+**In MCP Client Configuration**:
+```json
+{
+  "mcpServers": {
+    "google-workspace": {
+      "command": "/path/to/python",
+      "args": ["server.py"],
+      "workingDirectory": "/path/to/project",
+      "env": {
+        "DEFAULT_CALENDAR_IDS": "primary,work@company.com"
+      }
+    }
+  }
+}
+```
 
 ## Connecting to the MCP Server
 
-This server is designed to be used with an MCP host, such as Claude for Desktop. To connect, you will need to configure the host to launch the server using `docker-compose`.
+This server is designed to be used with an MCP host, such as Claude for Desktop. For proper tool discovery and communication, the server should be run directly on the host system.
 
 ### Example MCP Client Configuration
 
@@ -86,11 +159,14 @@ For example, to connect this server to Claude for Desktop, you would add the fol
 {
   "mcpServers": {
     "google-workspace": {
-      "command": "docker-compose",
+      "command": "/ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python",
       "args": [
-        "up"
+        "server.py"
       ],
-      "workingDirectory": "/ABSOLUTE/PATH/TO/google-workspace-mcp"
+      "workingDirectory": "/ABSOLUTE/PATH/TO/google-workspace-mcp",
+      "env": {
+        "DEFAULT_CALENDAR_IDS": "primary,work@company.com"
+      }
     }
   }
 }
@@ -104,7 +180,7 @@ Alternatively, you can use the `mcp-remote` utility to expose the server over HT
 
 1.  **Run the server with `mcp-remote`**:
     ```bash
-    mcp-remote --port 8000 -- ./venv/bin/python -m src.server
+    mcp-remote --port 8000 -- ./.venv/bin/python server.py
     ```
     This will start the MCP server and make it available at `http://localhost:8000`.
 

@@ -21,12 +21,23 @@ Here is the plan we'll follow:
 
 The following steps will refactor the project to use the Model Context Protocol.
 
-1.  **Update Dependencies**: Add the `mcp` library to `requirements.txt`.
-2.  **Refactor to MCP Server**: Replace the FastAPI implementation with a `FastMCP` server.
-3.  **Refactor Tools**: Convert tool functions to `async` and use the `@mcp.tool()` decorator for registration.
-4.  **Update Documentation**: Update the `README.md` and containerization files to reflect the new MCP-based approach.
+1.  **Update Dependencies**: Add the `mcp` library to `requirements.txt`. - **COMPLETED**
+2.  **Refactor to MCP Server**: Replace the FastAPI implementation with a `FastMCP` server. - **COMPLETED**
+3.  **Refactor Tools**: Convert tool functions to `async` and use the `@mcp.tool()` decorator for registration. - **COMPLETED**
+4.  **Update Documentation**: Update the `README.md` and containerization files to reflect the new MCP-based approach. - **COMPLETED**
 
-Let's get started with the MCP refactoring!
+### **Google Calendar Enhancements**
+
+The following steps will enhance the Google Calendar integration with advanced features:
+
+1.  **Calendar Listing**: Add functionality to list all available calendars for the user. - **COMPLETED**
+2.  **Configuration Support**: Implement support for configurable default calendar IDs in MCP client configuration. - **COMPLETED**
+3.  **Enhanced Event Listing**: Improve event listing with comprehensive filtering options. - **COMPLETED**
+4.  **Calendar ID Requirements**: Update existing calendar tools to require calendar IDs for better precision. - **COMPLETED**
+5.  **Test Cases**: Add comprehensive test cases for all calendar functions. - **COMPLETED**
+6.  **Documentation**: Update README.md with new calendar features and configuration options. - **COMPLETED**
+
+Let's get started with the Google Calendar enhancements!
 
 ---
 
@@ -102,6 +113,7 @@ First, let's define the file structure for our project.
 |   ├── __init__.py
 |   ├── main.py               # FastAPI server logic
 |   ├── auth.py               # Google OAuth handling
+|   ├── config.py             # Configuration management
 |   |
 |   ├── /tools/
 |   |   ├── __init__.py
@@ -132,7 +144,15 @@ This module will be responsible for handling the OAuth 2.0 flow. It will have on
 *   **Purpose:** This function will look for a valid `token.json`. If it doesn't exist or is expired, it will use `credentials.json` to initiate the OAuth 2.0 browser-based authorization flow. Upon success, it creates/updates `token.json` and returns the valid credentials object required by the Google API client libraries.
 *   **Returns:** A `google.oauth2.credentials.Credentials` object.
 
-#### **3. Tool Definitions**
+#### **3. Configuration Management (src/config.py)**
+
+This module will handle configuration settings, including default calendar IDs.
+
+*   **Function:** `get_default_calendar_ids() -> List[str]`
+*   **Purpose:** Retrieves the list of default calendar IDs from the MCP client configuration or environment variables.
+*   **Returns:** A list of calendar IDs to use as defaults when no specific calendar is specified.
+
+#### **4. Tool Definitions**
 
 Here we define the interface for each tool our MCP server will expose. Each function will take simple parameters and return a JSON string.
 
@@ -212,11 +232,56 @@ Here we define the interface for each tool our MCP server will expose. Each func
         }
         ```
 
-##### **Google Calendar Tools (src/tools/calendar_tools.py)**
+##### **Enhanced Google Calendar Tools (src/tools/calendar_tools.py)**
 
-1.  **Function:** `search_calendar_events(query: str, start_time: str, end_time: str) -> str`
+1.  **Function:** `list_calendars() -> str`
+    *   **Description:** Lists all available calendars for the authenticated user.
+    *   **Parameters:** None
+    *   **Returns:** A JSON string representing a list of calendars.
+    *   **Example JSON Output:**
+        ```json
+        [
+          {
+            "id": "primary",
+            "summary": "Your Name",
+            "description": "Primary calendar",
+            "accessRole": "owner"
+          },
+          {
+            "id": "work@company.com",
+            "summary": "Work Calendar",
+            "description": "Company work calendar",
+            "accessRole": "reader"
+          }
+        ]
+        ```
+
+2.  **Function:** `list_calendar_events(calendar_ids: List[str], start_time: str, end_time: str, query: str = None, max_results: int = 100) -> str`
+    *   **Description:** Lists all events from specified calendars within a time period, with optional filtering.
+    *   **Parameters:**
+        *   `calendar_ids`: List of calendar IDs to search (required).
+        *   `start_time`: The start of the time window in ISO 8601 format (e.g., '2025-08-01T00:00:00Z').
+        *   `end_time`: The end of the time window in ISO 8601 format.
+        *   `query`: Optional text to search for in event summaries and descriptions.
+        *   `max_results`: Maximum number of events to return (default: 100).
+    *   **Returns:** A JSON string representing a list of events.
+    *   **Example JSON Output:**
+        ```json
+        [
+          {
+            "id": "xyz123456789",
+            "summary": "Team Sync",
+            "start": "2025-08-06T10:00:00+10:00",
+            "end": "2025-08-06T10:30:00+10:00",
+            "calendarId": "primary"
+          }
+        ]
+        ```
+
+3.  **Function:** `search_calendar_events(calendar_ids: List[str], query: str, start_time: str, end_time: str) -> str`
     *   **Description:** Searches for calendar events within a specified time range that match a query.
     *   **Parameters:**
+        *   `calendar_ids`: List of calendar IDs to search (required).
         *   `query`: The text to search for in event summaries and descriptions.
         *   `start_time`: The start of the time window in ISO 8601 format (e.g., '2025-08-01T00:00:00Z').
         *   `end_time`: The end of the time window in ISO 8601 format.
@@ -228,14 +293,16 @@ Here we define the interface for each tool our MCP server will expose. Each func
             "id": "xyz123456789",
             "summary": "Team Sync",
             "start": "2025-08-06T10:00:00+10:00",
-            "end": "2025-08-06T10:30:00+10:00"
+            "end": "2025-08-06T10:30:00+10:00",
+            "calendarId": "primary"
           }
         ]
         ```
 
-2.  **Function:** `get_calendar_event_details(event_id: str) -> str`
+4.  **Function:** `get_calendar_event_details(calendar_id: str, event_id: str) -> str`
     *   **Description:** Fetches the full details of a specific calendar event.
     *   **Parameters:**
+        *   `calendar_id`: The ID of the calendar containing the event (required).
         *   `event_id`: The unique ID of the event.
     *   **Returns:** A JSON string with event details.
     *   **Example JSON Output:**
@@ -253,7 +320,26 @@ Here we define the interface for each tool our MCP server will expose. Each func
         }
         ```
 
-#### **4. MCP Server (src/main.py)**
+#### **5. MCP Client Configuration Enhancement**
+
+The MCP client configuration will support optional calendar configuration:
+
+```json
+{
+  "mcpServers": {
+    "google-workspace": {
+      "command": "/path/to/python",
+      "args": ["server.py"],
+      "workingDirectory": "/path/to/project",
+      "env": {
+        "DEFAULT_CALENDAR_IDS": "primary,work@company.com"
+      }
+    }
+  }
+}
+```
+
+#### **6. MCP Server (src/main.py)**
 
 This module will use FastAPI to create the web server. It will have a single endpoint to receive tool-call requests.
 
@@ -276,7 +362,7 @@ This module will use FastAPI to create the web server. It will have a single end
     }
     ```
 
-#### **5. Containerization (Dockerfile & docker-compose.yml)**
+#### **7. Containerization (Dockerfile & docker-compose.yml)**
 
 ##### **Dockerfile**
 

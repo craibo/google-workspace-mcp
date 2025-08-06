@@ -1,3 +1,9 @@
+#!/usr/bin/env python3
+"""
+Google Workspace MCP Server
+Standalone script for running the MCP server
+"""
+
 import sys
 import os
 import logging
@@ -9,10 +15,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Add the project root to the Python path
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, project_root)
-logger.info(f"Added project root to Python path: {project_root}")
+# Add the current directory to the Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, current_dir)
+logger.info(f"Added current directory to Python path: {current_dir}")
 
 try:
     from src.mcp_instance import mcp
@@ -24,9 +30,8 @@ try:
     
     logger.info("Starting MCP server...")
     
-    if __name__ == "__main__":
-        mcp.run(transport='stdio')
-        
+    mcp.run(transport='stdio')
+    
 except Exception as e:
     logger.error(f"Failed to start server: {e}")
-    raise
+    raise 
