@@ -6,7 +6,7 @@ This server is built using the official [Python MCP SDK](https://modelcontextpro
 
 ## Features
 
--   **Google Drive**: Search for files and retrieve file content.
+-   **Google Drive**: Search for files, retrieve file content, and perform advanced content-based searches across multiple file types.
 -   **Gmail**: Search for emails and fetch email details.
 -   **Google Calendar**: List calendars, search events, and get event details with enhanced filtering.
 -   **OAuth 2.0**: Secure authentication using Google's OAuth 2.0 flow.
@@ -21,6 +21,8 @@ This server exposes the following tools to the agent:
 
 -   `search_drive(query: str)`: Searches for files in Google Drive matching the query.
 -   `get_drive_file_details(file_id: str)`: Fetches the metadata and content of a specific file by its ID.
+-   `search_drive_by_content(search_term: str, folder_id: Optional[str] = None, file_types: Optional[List[str]] = None, case_sensitive: bool = False, use_regex: bool = False, max_results: Optional[int] = None)`: Searches for files containing specific text content with advanced options.
+-   `search_within_file_content(file_id: str, search_term: str, case_sensitive: bool = False, use_regex: bool = False)`: Searches for specific content within a single file.
 
 ### Gmail
 
@@ -33,6 +35,51 @@ This server exposes the following tools to the agent:
 -   `list_calendar_events(calendar_ids: Optional[List[str]] = None, start_time: str, end_time: str, query: Optional[str] = None, max_results: int = 100)`: Lists all events from specified calendars within a time period, with optional filtering. If no calendar_ids are provided, uses the default configured calendars.
 -   `search_calendar_events(calendar_ids: Optional[List[str]] = None, query: str, start_time: str, end_time: str)`: Searches for calendar events within a specified time range that match a query. If no calendar_ids are provided, uses the default configured calendars.
 -   `get_calendar_event_details(event_id: str, calendar_id: Optional[str] = None)`: Fetches the full details of a specific calendar event. If no calendar_id is provided, uses the first configured default calendar.
+
+## Content Search Features
+
+The Google Drive content search functionality supports:
+
+### Supported File Types
+- **Google Docs** (native API support)
+- **PDF files** (text extraction)
+- **Plain text files** (TXT, CSV)
+- **Microsoft Word documents** (DOCX)
+
+### Search Options
+- **Case-sensitive/insensitive search**
+- **Regular expression support**
+- **Folder-specific search scope**
+- **File type filtering**
+- **Configurable result limits**
+
+### Search Results Include
+- File metadata (name, ID, creation/modification dates, size)
+- Content snippets with highlighted matches
+- Match count and positions
+- Parent folder information
+
+### Example Usage
+
+```python
+# Basic content search
+search_drive_by_content("project requirements")
+
+# Case-sensitive search
+search_drive_by_content("API", case_sensitive=True)
+
+# Regex search for email patterns
+search_drive_by_content(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", use_regex=True)
+
+# Search within specific folder
+search_drive_by_content("budget", folder_id="folder123")
+
+# Search specific file types only
+search_drive_by_content("report", file_types=["application/pdf", "application/vnd.google-apps.document"])
+
+# Search within a specific file
+search_within_file_content("file_id_123", "specific term")
+```
 
 ## Prerequisites
 
@@ -95,6 +142,51 @@ This server exposes the following tools to the agent:
         ./.venv/bin/pip install -r requirements.txt
         ```
 
+## Configuration Options
+
+### Default Calendar IDs
+
+You can configure default calendar IDs that will be used when no specific calendar is provided. This is useful for setting up commonly used calendars.
+
+**Environment Variable**: `DEFAULT_CALENDAR_IDS`
+
+**Example**:
+```bash
+export DEFAULT_CALENDAR_IDS="primary,work@company.com,personal@gmail.com"
+```
+
+### Content Search Configuration
+
+You can configure content search behavior using environment variables:
+
+**Environment Variables**:
+- `MAX_CONTENT_SEARCH_RESULTS`: Maximum number of search results (default: 50)
+- `CONTENT_SEARCH_SNIPPET_LENGTH`: Length of search result snippets in characters (default: 200)
+
+**Example**:
+```bash
+export MAX_CONTENT_SEARCH_RESULTS=100
+export CONTENT_SEARCH_SNIPPET_LENGTH=300
+```
+
+**In MCP Client Configuration**:
+```json
+{
+  "mcpServers": {
+    "google-workspace": {
+      "command": "/path/to/python",
+      "args": ["server.py"],
+      "workingDirectory": "/path/to/project",
+      "env": {
+        "DEFAULT_CALENDAR_IDS": "primary,work@company.com",
+        "MAX_CONTENT_SEARCH_RESULTS": "100",
+        "CONTENT_SEARCH_SNIPPET_LENGTH": "300"
+      }
+    }
+  }
+}
+```
+
 ## Running the Server
 
 The server communicates over `stdio`, as is standard for MCP servers. For MCP clients to properly connect, the server should be run directly on the host system.
@@ -117,35 +209,6 @@ Docker is primarily useful for deployment scenarios where you want to containeri
     docker-compose up --build
     ```
     The `docker-compose.yml` configuration ensures that the `credentials.json` file is available to the container and that the `token.json` file is persisted in a Docker volume.
-
-## Configuration Options
-
-### Default Calendar IDs
-
-You can configure default calendar IDs that will be used when no specific calendar is provided. This is useful for setting up commonly used calendars.
-
-**Environment Variable**: `DEFAULT_CALENDAR_IDS`
-
-**Example**:
-```bash
-export DEFAULT_CALENDAR_IDS="primary,work@company.com,personal@gmail.com"
-```
-
-**In MCP Client Configuration**:
-```json
-{
-  "mcpServers": {
-    "google-workspace": {
-      "command": "/path/to/python",
-      "args": ["server.py"],
-      "workingDirectory": "/path/to/project",
-      "env": {
-        "DEFAULT_CALENDAR_IDS": "primary,work@company.com"
-      }
-    }
-  }
-}
-```
 
 ## Connecting to the MCP Server
 

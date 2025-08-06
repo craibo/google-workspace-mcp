@@ -5,3 +5,4 @@ pydantic
 mcp
 pytest
 pytest-asyncio
+PyPDF2
