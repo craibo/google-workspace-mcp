@@ -300,11 +300,11 @@ For example, to connect this server to Claude for Desktop or Gemini CLI, you wou
 {
   "mcpServers": {
     "google-workspace": {
-      "command": "/Users/craibo/craibo/google-workspace-mcp/.venv/bin/python",
+      "command": "/ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python",
       "args": [
         "server.py"
       ],
-      "workingDirectory": "/Users/craibo/craibo/google-workspace-mcp",
+      "workingDirectory": "/ABSOLUTE/PATH/TO/google-workspace-mcp",
       "env": {
         "DEFAULT_CALENDAR_IDS": "primary,work@company.com",
         "DEFAULT_TASK_LIST_ID": "@default",
@@ -331,9 +331,9 @@ To use this server with [Gemini CLI](https://github.com/google-gemini/gemini-cli
 {
   "mcpServers": {
     "google-workspace": {
-      "command": "/Users/craibo/craibo/google-workspace-mcp/.venv/bin/python",
+      "command": "/ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python",
       "args": ["server.py"],
-      "workingDirectory": "/Users/craibo/craibo/google-workspace-mcp",
+      "workingDirectory": "/ABSOLUTE/PATH/TO/google-workspace-mcp",
       "env": {
         "DEFAULT_CALENDAR_IDS": "primary,work@company.com",
         "DEFAULT_TASK_LIST_ID": "@default",
@@ -418,7 +418,7 @@ python server.py
 **MCP Configuration Fix**: Make sure the `command` points to the virtual environment Python:
 ```json
 {
-  "command": "/Users/craibo/craibo/google-workspace-mcp/.venv/bin/python"
+  "command": "/ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python"
 }
 ```
 
@@ -428,7 +428,7 @@ python server.py
 **Solution**: Ensure the `workingDirectory` is set to the project root:
 ```json
 {
-  "workingDirectory": "/Users/craibo/craibo/google-workspace-mcp"
+  "workingDirectory": "/ABSOLUTE/PATH/TO/google-workspace-mcp"
 }
 ```
 
@@ -457,19 +457,19 @@ To test if your MCP configuration is correct:
 
 1. **Test the Python executable**:
    ```bash
-   /Users/craibo/craibo/google-workspace-mcp/.venv/bin/python -c "import mcp; print('✅ MCP module found')"
+   /ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python -c "import mcp; print('✅ MCP module found')"
    ```
 
 2. **Test the server startup**:
    ```bash
-   /Users/craibo/craibo/google-workspace-mcp/.venv/bin/python /Users/craibo/craibo/google-workspace-mcp/server.py
+   /ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python /ABSOLUTE/PATH/TO/google-workspace-mcp/server.py
    ```
    You should see "Starting MCP server..." and then the process should wait for input.
 
 3. **Test file accessibility**:
    ```bash
-   ls -la /Users/craibo/craibo/google-workspace-mcp/server.py
-   ls -la /Users/craibo/craibo/google-workspace-mcp/credentials.json
+   ls -la /ABSOLUTE/PATH/TO/google-workspace-mcp/server.py
+   ls -la /ABSOLUTE/PATH/TO/google-workspace-mcp/credentials.json
    ```
 
 ### Connecting with `
