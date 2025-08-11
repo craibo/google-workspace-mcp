@@ -418,11 +418,7 @@ python server.py
 **MCP Configuration Fix**: Make sure the `command` points to the virtual environment Python:
 ```json
 {
-<<<<<<< HEAD
   "command": "/ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python"
-=======
-  "command": "/Users/craibo/craibo/google-workspace-mcp/.venv/bin/python"
->>>>>>> origin/main
 }
 ```
 
@@ -432,11 +428,7 @@ python server.py
 **Solution**: Ensure the `workingDirectory` is set to the project root:
 ```json
 {
-<<<<<<< HEAD
   "workingDirectory": "/ABSOLUTE/PATH/TO/google-workspace-mcp"
-=======
-  "workingDirectory": "/Users/craibo/craibo/google-workspace-mcp"
->>>>>>> origin/main
 }
 ```
 
