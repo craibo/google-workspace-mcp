@@ -1,50 +1,29 @@
 
-# Google Workspace MCP Server - Development Guide
+# Google Workspace MCP Server - Development Index
 
-This project is a complete Google Workspace MCP (Model-Context-Protocol) server that provides secure access to Google Drive, Gmail, Google Calendar, and Google Tasks through a standardized API interface.
+This project provides secure MCP (Model-Context-Protocol) access to Google Workspace services.
 
-## **Project Overview**
+## 📋 Documentation Structure
 
-The Google Workspace MCP server is fully implemented and production-ready, supporting:
+### 📘 [Complete Implementation Guide](google-workspace-mcp.md)
+The comprehensive reference containing:
+- **Setup & Authentication**: Google Cloud configuration and OAuth 2.0
+- **API Documentation**: All 25+ MCP tools with examples
+- **Architecture**: Server implementation and design patterns  
+- **Deployment**: Docker containerization and production setup
+- **Testing**: 53 tests with coverage details
 
-- **Google Drive**: File search, content retrieval, and advanced content-based searches
-- **Gmail**: Email search, message details, and label management  
-- **Google Calendar**: Calendar and event management with smart defaults
-- **Google Tasks**: Complete task management including CRUD operations and search
+### 🐍 [Python Development Guidelines](python.mdc)  
+Coding standards and FastAPI best practices for this project
 
-## **Architecture Documentation**
+### 📖 [User Documentation](../README.md)
+End-user guide with installation and usage examples
 
-The complete project architecture, setup instructions, and API specifications are documented in the **[Google Workspace MCP Service Implementation Plan](google-workspace-mcp.md)**. This comprehensive document covers:
+## 🚀 Quick Start
 
-- **Project Setup**: Google Cloud configuration, API enablement, and OAuth 2.0 setup
-- **Tool Definitions**: Complete specifications for all Google Workspace tools
-- **Server Implementation**: MCP server architecture and design patterns
-- **Containerization**: Docker deployment and configuration
-- **Authentication**: OAuth 2.0 flow and security considerations
+1. **Setup**: Follow the [Implementation Guide](google-workspace-mcp.md#project-setup--authentication)
+2. **Deploy**: Use provided [Docker configuration](google-workspace-mcp.md#docker-deployment)  
+3. **Integrate**: Connect with MCP clients like Claude Desktop
 
-## **Development Guidelines**
-
-All code in this project follows the standards defined in the **[Python and FastAPI Development Guidelines](python.mdc)**. These guidelines ensure:
-
-- **Code Consistency**: Functional programming patterns and naming conventions
-- **FastAPI Best Practices**: Async operations, dependency injection, and error handling
-- **Performance Optimization**: Caching strategies and efficient data handling
-- **Robust Error Handling**: Consistent error management across all tools
-
-## **Current Implementation Status**
-
-✅ **Production Ready** - All planned features are implemented and tested:
-
-- **53 passing tests** with comprehensive coverage
-- **7 Google Tasks tools** fully implemented with async patterns
-- **Complete OAuth 2.0 integration** with all required scopes
-- **Comprehensive documentation** and usage examples
-- **Docker deployment** ready for production use
-
-## **Getting Started**
-
-1. Review the **[Service Implementation Plan](google-workspace-mcp.md)** for setup instructions
-2. Follow the **[Development Guidelines](python.mdc)** for code contributions
-3. Refer to the main README.md for usage examples and API documentation
-
-The server is ready for deployment and integration with MCP-compatible clients like Claude for Desktop or Gemini CLI.
+## 📊 Status: Production Ready
+All Google Workspace services implemented and tested. Ready for deployment.
