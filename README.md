@@ -300,11 +300,11 @@ For example, to connect this server to Claude for Desktop or Gemini CLI, you wou
 {
   "mcpServers": {
     "google-workspace": {
-      "command": "/Users/craibo/craibo/google-workspace-mcp/.venv/bin/python",
+      "command": "/ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python",
       "args": [
         "server.py"
       ],
-      "workingDirectory": "/Users/craibo/craibo/google-workspace-mcp",
+      "workingDirectory": "/ABSOLUTE/PATH/TO/google-workspace-mcp",
       "env": {
         "DEFAULT_CALENDAR_IDS": "primary,work@company.com",
         "DEFAULT_TASK_LIST_ID": "@default",
@@ -331,9 +331,9 @@ To use this server with [Gemini CLI](https://github.com/google-gemini/gemini-cli
 {
   "mcpServers": {
     "google-workspace": {
-      "command": "/Users/craibo/craibo/google-workspace-mcp/.venv/bin/python",
+      "command": "/ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python",
       "args": ["server.py"],
-      "workingDirectory": "/Users/craibo/craibo/google-workspace-mcp",
+      "workingDirectory": "/ABSOLUTE/PATH/TO/google-workspace-mcp",
       "env": {
         "DEFAULT_CALENDAR_IDS": "primary,work@company.com",
         "DEFAULT_TASK_LIST_ID": "@default",
