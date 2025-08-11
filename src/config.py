@@ -47,6 +47,36 @@ def validate_calendar_ids(calendar_ids: List[str]) -> List[str]:
     logger.info(f"Validated calendar IDs: {validated_ids}")
     return validated_ids
 
+def get_default_task_list_id() -> str:
+    """
+    Retrieves the default task list ID from environment variables.
+    
+    Returns:
+        The default task list ID to use when no specific task list is specified.
+        If no environment variable is set, returns '@default' as default.
+    """
+    default_task_list = os.getenv('DEFAULT_TASK_LIST_ID', '@default')
+    logger.info(f"Default task list ID: {default_task_list}")
+    return default_task_list
+
+def validate_task_list_id(task_list_id: str) -> str:
+    """
+    Validates and normalizes task list ID.
+    
+    Args:
+        task_list_id: Task list ID to validate
+        
+    Returns:
+        Validated task list ID
+    """
+    if not task_list_id or not task_list_id.strip():
+        logger.warning("No task list ID provided, using default")
+        return get_default_task_list_id()
+    
+    validated_id = task_list_id.strip()
+    logger.info(f"Validated task list ID: {validated_id}")
+    return validated_id
+
 def get_supported_content_search_types() -> List[str]:
     """
     Returns the list of MIME types that support content search.
@@ -78,4 +108,22 @@ def get_content_search_snippet_length() -> int:
     Returns:
         Number of characters to include in search snippets.
     """
-    return int(os.getenv('CONTENT_SEARCH_SNIPPET_LENGTH', '200')) 
+    return int(os.getenv('CONTENT_SEARCH_SNIPPET_LENGTH', '200'))
+
+def get_max_task_search_results() -> int:
+    """
+    Returns the maximum number of results for task search operations.
+    
+    Returns:
+        Maximum number of task search results to return.
+    """
+    return int(os.getenv('MAX_TASK_SEARCH_RESULTS', '100'))
+
+def get_default_task_max_results() -> int:
+    """
+    Returns the default maximum number of results for task listing operations.
+    
+    Returns:
+        Default maximum number of tasks to return when listing.
+    """
+    return int(os.getenv('DEFAULT_TASK_MAX_RESULTS', '100')) 

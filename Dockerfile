@@ -12,9 +12,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code into the container
 COPY ./src ./src
+COPY server.py ./
 
-# Copy credentials (handle with care in production)
-COPY credentials.json ./
+# Note: credentials.json should be mounted as a volume in production
+# Example: docker run -v /path/to/credentials.json:/usr/src/app/credentials.json ...
 
 # Run the app when the container launches
-CMD ["python", "-m", "src.server"]
+CMD ["python", "server.py"]
