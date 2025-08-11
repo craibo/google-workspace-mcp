@@ -300,11 +300,11 @@ For example, to connect this server to Claude for Desktop or Gemini CLI, you wou
 {
   "mcpServers": {
     "google-workspace": {
-      "command": "/ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python",
+      "command": "/Users/craibo/craibo/google-workspace-mcp/.venv/bin/python",
       "args": [
         "server.py"
       ],
-      "workingDirectory": "/ABSOLUTE/PATH/TO/google-workspace-mcp",
+      "workingDirectory": "/Users/craibo/craibo/google-workspace-mcp",
       "env": {
         "DEFAULT_CALENDAR_IDS": "primary,work@company.com",
         "DEFAULT_TASK_LIST_ID": "@default",
@@ -331,9 +331,9 @@ To use this server with [Gemini CLI](https://github.com/google-gemini/gemini-cli
 {
   "mcpServers": {
     "google-workspace": {
-      "command": "/ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python",
+      "command": "/Users/craibo/craibo/google-workspace-mcp/.venv/bin/python",
       "args": ["server.py"],
-      "workingDirectory": "/ABSOLUTE/PATH/TO/google-workspace-mcp",
+      "workingDirectory": "/Users/craibo/craibo/google-workspace-mcp",
       "env": {
         "DEFAULT_CALENDAR_IDS": "primary,work@company.com",
         "DEFAULT_TASK_LIST_ID": "@default",
@@ -418,7 +418,11 @@ python server.py
 **MCP Configuration Fix**: Make sure the `command` points to the virtual environment Python:
 ```json
 {
+<<<<<<< HEAD
   "command": "/ABSOLUTE/PATH/TO/google-workspace-mcp/.venv/bin/python"
+=======
+  "command": "/Users/craibo/craibo/google-workspace-mcp/.venv/bin/python"
+>>>>>>> origin/main
 }
 ```
 
@@ -428,7 +432,11 @@ python server.py
 **Solution**: Ensure the `workingDirectory` is set to the project root:
 ```json
 {
+<<<<<<< HEAD
   "workingDirectory": "/ABSOLUTE/PATH/TO/google-workspace-mcp"
+=======
+  "workingDirectory": "/Users/craibo/craibo/google-workspace-mcp"
+>>>>>>> origin/main
 }
 ```
 
