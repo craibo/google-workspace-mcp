@@ -19,7 +19,7 @@ try:
     logger.info("Successfully imported MCP instance")
     
     # Import the tool modules to ensure the tools are registered
-    from src.tools import calendar_tools, drive_tools, gmail_tools
+    from src.tools import calendar_tools, drive_tools, gmail_tools, tasks_tools
     logger.info("Successfully imported all tool modules")
     
     logger.info("Starting MCP server...")
